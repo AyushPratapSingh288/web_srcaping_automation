@@ -1,10 +1,12 @@
 import os
+import sys
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import google.generativeai as genai
 import json
 from datetime import datetime
 
+date_string = sys.argv[1]
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -26,7 +28,17 @@ def reviews_summary(reviews):
     return response
     
 def aggregate_reviews():
-    print("hello")
+    pipeline = [
+        {"$match": {"date": date_string}},  # Match the date string exactly
+        {"$group": {"_id": None, "all_reviews": {"$push": "$text"}}}
+    ]
+    result = list(oneDayReviewCollection.aggregate(pipeline))
+    if result:
+        # Join all reviews into a single string
+        all_reviews_text = " ".join(result[0]["all_reviews"])
+        return all_reviews_text
+    else:
+        return "No reviews found for this date."
     
     
 def main():
