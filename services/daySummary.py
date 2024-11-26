@@ -29,12 +29,11 @@ def reviews_summary(reviews):
     
 def aggregate_reviews():
     pipeline = [
-        {"$match": {"date": date_string}},  # Match the date string exactly
+        {"$match": {"date": date_string}},  
         {"$group": {"_id": None, "all_reviews": {"$push": "$text"}}}
     ]
     result = list(oneDayReviewCollection.aggregate(pipeline))
     if result:
-        # Join all reviews into a single string
         all_reviews_text = " ".join(result[0]["all_reviews"])
         return all_reviews_text
     else:

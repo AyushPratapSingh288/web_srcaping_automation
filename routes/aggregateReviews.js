@@ -1,6 +1,6 @@
 const express = require('express')
 const aggregatedReviews = require('../utils/aggregateChildProcess')
-const router = express.Router ;
+const router = express.Router() ;
 
 router.post('/', async (req,res)=>{
     const { date } = req.body;
